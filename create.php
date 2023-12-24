@@ -1,15 +1,31 @@
 <?php
 try {
+    function randomString($len){
+        $str = "12345567890!@#$%^&*()_+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTVUWXYZ";
+        $rand = "";
+        for ($i = 0; $i < $len; $i++) {
+            $index = rand(0, strlen($str) - 1);
+            $rand .= $str[$index];
+        }
+        return $rand;
+    }
     $pdo = new PDO('mysql:host=localhost;port=3306;dbname=product_crud', 'root', '');
     // if there was an error establishing connection 
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+    if (!is_dir('images')) {
+        mkdir('images');
+    }
     $errors = [];
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        echo '<pre>';
-        var_dump($_FILES);
-        echo '</pre>';
-        ['image' => $image, 'title' => $title, 'description' => $description, 'price' => $price] = $_POST;
+        ['title' => $title, 'description' => $description, 'price' => $price] = $_POST;
+        $date = date('Y-m-d H:i:s');
+        $image = $_FILES['image'] ?? null;
+        $imagePath = '';
+        if($image && $image['tmp_name']) {
+            $imagePath = './images/'.randomString(8).'/'.$image['name'];
+            mkdir(dirname($imagePath));
+            move_uploaded_file($image['tmp_name'], $imagePath);
+        }
         if (!$title)
             $errors[] = 'Product title is required';
         if (!$price)
@@ -18,11 +34,13 @@ try {
         if (empty($errors)) {
             $statement = $pdo->prepare('INSERT INTO products (title, description, image, price, create_date) VALUES (:title, :description, :image, :price, :date)');
             $statement->bindParam(':title', $title);
-            $statement->bindParam(':description', $description);
-            $statement->bindParam(':image', $image);
+            $statement->bindParam(':description', $description
+        );
+            $statement->bindParam(':image', $imagePath);
             $statement->bindParam(':price', $price);
             $statement->bindParam(':date', $date);
             $statement->execute();
+            header('Location:./index.php');
         }
     }
 } catch (PDOException $e) {
