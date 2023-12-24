@@ -1,17 +1,17 @@
 
 <?php
 try {
-    $pdo = new PDO('mysql:host=localhost;port=3306;dbname=product_crud', 'root', '');
-    // if there was an error establishing connection 
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $query = $pdo->prepare('SELECT * FROM products ORDER BY title ');
-    $query->execute();
-    $products = $query->fetchAll(PDO::FETCH_ASSOC);
-    // echo '<pre>';
-    // var_dump($products);
-    // echo '</pre>';
+  $pdo = new PDO('mysql:host=localhost;port=3306;dbname=product_crud', 'root', '');
+  // if there was an error establishing connection 
+  $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  $query = $pdo->prepare('SELECT * FROM products ORDER BY title ');
+  $query->execute();
+  $products = $query->fetchAll(PDO::FETCH_ASSOC);
+  // echo '<pre>';
+  // var_dump($products);
+  // echo '</pre>';
 } catch (PDOException $e) {
-    echo $e->getMessage();
+  echo $e->getMessage();
 }
 ?>
 <!doctype html>
@@ -44,18 +44,18 @@ try {
   <tbody>
     
     <?php foreach ($products as $i => $product): ?>
-                    <tr>
-                  <th scope="row"> <?php echo $i + 1; ?> </th>
-                  <td><img src="<?php echo $product["image"]; ?>" alt = "image" width=80px height= 80px /></td>
-                  <td> <?php echo $product["title"]; ?></td>
-                  <td><?php echo $product["description"]; ?></td>
-                  <td><?php echo $product["price"]; ?></td>
-                  <td><?php echo $product["create_date"]; ?></td>
-                  <td>
-                    <button type="button" class="btn btn-sm btn-outline-success">Edit</button>
-                    <button type="button" class="btn btn-sm btn-outline-danger">Danger</button>
-                 </td>
-                </tr>
+                      <tr>
+                    <th scope="row"> <?php echo $i + 1; ?> </th>
+                    <td><img src="<?php echo $product["image"]; ?>" alt = "image" width=80px height= 80px /></td>
+                    <td> <?php echo $product["title"]; ?></td>
+                    <td><?php echo $product["description"]; ?></td>
+                    <td><?php echo $product["price"]; ?></td>
+                    <td><?php echo $product["create_date"]; ?></td>
+                    <td>
+                      <button type="button" class="btn btn-sm btn-outline-success">Edit</button>
+                      <button type="button" class="btn btn-sm btn-outline-danger">Danger</button>
+                   </td>
+                  </tr>
     
     <?php endforeach; ?>
     
